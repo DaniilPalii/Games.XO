@@ -79,6 +79,15 @@ namespace XO.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Player {0} marks {1}..
+        /// </summary>
+        public static string PlayerMarks {
+            get {
+                return ResourceManager.GetString("PlayerMarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player O win!.
         /// </summary>
         public static string PlayerOWin {

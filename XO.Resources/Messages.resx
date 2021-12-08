@@ -123,6 +123,9 @@
   <data name="GamePending" xml:space="preserve">
     <value>Game is pending.</value>
   </data>
+  <data name="PlayerMarks" xml:space="preserve">
+    <value>Player {0} marks {1}.</value>
+  </data>
   <data name="PlayerOWin" xml:space="preserve">
     <value>Player O win!</value>
   </data>

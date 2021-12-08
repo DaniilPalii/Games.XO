@@ -43,6 +43,13 @@ namespace XO.ConsoleUI.Internal
             => WriteLine(
                 MessageMap.GetFor(game.State));
 
+        public void WriteChosenPosition(Position choosenPosition)
+        {
+            var symbol = game.Grid[choosenPosition];
+            WriteLine(
+                Format(Messages.PlayerMarks, symbol, choosenPosition));
+        }
+
         private Position PromptForPosition()
             => PromptForSelection(
                 title: Messages.SelectCell,
@@ -74,8 +81,8 @@ namespace XO.ConsoleUI.Internal
                     .Title(title)
                     .AddChoices(choises));
 
-        private static string Format(string format, object? arg0)
-            => string.Format(CultureInfo.CurrentCulture, format, arg0);
+        private static string Format(string format, params object?[] args)
+            => string.Format(CultureInfo.CurrentCulture, format, args);
 
         private static void WriteLine(string text)
             => Console.WriteLine(text);

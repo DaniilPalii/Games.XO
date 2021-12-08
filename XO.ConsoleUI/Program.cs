@@ -15,15 +15,18 @@ var players = console.RequestPlayers()
 Console.Clear();
 console.WriteGrid();
 
+Position choosenPosition;
+
 while (game.State is GameState.Pending)
 {
     players.MoveNext();
     console.WriteTurn();
-    game.Mark(
-        players.Current.ChoosePosition());
+    choosenPosition = players.Current.ChoosePosition();
+    game.Mark(choosenPosition);
+
     Console.SetCursorPosition(0, 0);
     console.WriteGrid();
-    Thread.Sleep(500);
+    console.WriteChosenPosition(choosenPosition);
 }
 
 console.WriteState();
