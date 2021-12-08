@@ -9,7 +9,7 @@ namespace XO.Core.Players
 
         public Position ChoosePosition()
         {
-            var availablePositions = game.Grid.FreePositions.ToList();
+            var availablePositions = game.Grid.GetFreePositions().ToList();
 
             return random.Next(availablePositions);
         }

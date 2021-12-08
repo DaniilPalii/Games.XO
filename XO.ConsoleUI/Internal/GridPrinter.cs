@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using XO.Core;
+using XO.Core.Components;
 
 namespace XO.ConsoleUI.Internal
 {

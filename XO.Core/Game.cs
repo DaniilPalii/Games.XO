@@ -1,4 +1,4 @@
-﻿using XO.Core.Internal;
+﻿using XO.Core.Components;
 
 namespace XO.Core
 {
@@ -48,7 +48,7 @@ namespace XO.Core
 
         private bool DoesCurrentSymbolWin()
             => Grid.GetLines(lastMarkedPosition)
-                .Any(l => l.HasThree(CurrentSymbol));
+                .Any(l => l.Contains(CurrentSymbol, times: 3));
 
         private readonly Grid grid = new();
         private readonly Random random = new();

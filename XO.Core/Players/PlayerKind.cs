@@ -4,6 +4,6 @@
     {
         Human,
         RandomizingComputer,
-        //InstructedComputer,
+        InstructedComputer,
     }
 }

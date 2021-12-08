@@ -53,7 +53,7 @@ namespace XO.ConsoleUI.Internal
         private Position PromptForPosition()
             => PromptForSelection(
                 title: Messages.SelectCell,
-                choises: game.Grid.FreePositions
+                choises: game.Grid.GetFreePositions()
                     .OrderBy(p => p.Column)
                     .ThenBy(p => p.Row));
 
@@ -71,6 +71,7 @@ namespace XO.ConsoleUI.Internal
             {
                 PlayerKind.Human => new HumanPlayer(choosePosition: () => PromptForPosition()),
                 PlayerKind.RandomizingComputer => new RandomizingComputerPlayer(game),
+                PlayerKind.InstructedComputer => new InstructedComputerPlayer(game),
                 _ => throw new UnhandledEnumValueException(playerKind),
             };
 

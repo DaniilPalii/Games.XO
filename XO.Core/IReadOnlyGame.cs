@@ -1,4 +1,6 @@
-﻿namespace XO.Core
+﻿using XO.Core.Components;
+
+namespace XO.Core
 {
     public interface IReadOnlyGame
     {

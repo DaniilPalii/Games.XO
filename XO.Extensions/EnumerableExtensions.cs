@@ -1,13 +1,18 @@
-﻿namespace XO.SystemExtensions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace XO.SystemExtensions
 {
     public static class EnumerableExtensions
     {
-        public static bool Has<T>(this IEnumerable<T> elements, T match, int times)
+        public static bool Contains<T>(this IEnumerable<T> elements, T value, int times)
         {
+            if (times <= 0)
+                throw new ArgumentException(message: "Should be greater than 0", paramName: nameof(times));
+
             var count = 0;
 
             foreach (var element in elements)
-                if (Equals(element, match))
+                if (Equals(element, value))
                 {
                     count++;
 
@@ -17,9 +22,6 @@
 
             return false;
         }
-
-        public static bool Has<T>(this IEnumerable<T> elements, T match)
-               => elements.Any(e => Equals(e, match));
 
         public static bool AreEqual<T>(this IEnumerable<T> elements)
         {
@@ -34,6 +36,20 @@
             while (true)
                 foreach (var element in elements)
                     yield return element;
+        }
+
+        public static bool TryGet<T>(this IEnumerable<T> elements, Func<T, bool> predicate, [MaybeNullWhen(false)] out T element)
+        {
+            element = elements.FirstOrDefault(predicate);
+
+            return element is not null;
+        }
+
+        public static bool TryGet<T>(this IEnumerable<T> elements, [MaybeNullWhen(false)] out T element)
+        {
+            element = elements.FirstOrDefault();
+
+            return element is not null;
         }
     }
 }
