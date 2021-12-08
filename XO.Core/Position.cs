@@ -12,6 +12,14 @@
 
         public int Column { get; }
 
+        public override bool Equals(object? obj)
+            => obj is Position position
+                && Row == position.Row
+                && Column == position.Column;
+
+        public override int GetHashCode()
+            => HashCode.Combine(Row, Column);
+
         public override string ToString()
         {
             var columnSymbol = Column switch
@@ -32,5 +40,11 @@
 
             return $"{columnSymbol}{rowSymbol}";
         }
+
+        public static bool operator ==(Position left, Position right)
+            => left.Equals(right);
+
+        public static bool operator !=(Position left, Position right)
+            => !(left == right);
     }
 }

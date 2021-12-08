@@ -1,95 +1,151 @@
 ﻿using System.Collections;
+using XO.SystemExtensions;
 
 namespace XO.Core.Internal
 {
     internal class Grid : IReadOnlyGrid
     {
         public Grid()
-            => rows = new[]
-            {
-                new Symbol?[3],
-                new Symbol?[3],
-                new Symbol?[3],
-            };
+            => marks = new Symbol?[Width, Height];
 
         public Symbol? this[Position position]
         {
-            get => rows[position.Row][position.Column];
-            set => rows[position.Row][position.Column] = value;
+            get => marks[position.Row, position.Column];
+            set => marks[position.Row, position.Column] = value;
         }
 
         public IEnumerable<Position> FreePositions
+            => Cells.Where(c => c.Empty)
+                .Select(c => c.Position);
+
+        public IEnumerable<ICell> Cells
+            => Positions.Select(p => new Cell(this, p));
+
+        public static IEnumerable<Position> Positions
         {
             get
             {
-                for (var rowIndex = 0; rowIndex < 3; rowIndex++)
-                {
-                    for (var columnIndex = 0; columnIndex < 3; columnIndex++)
-                    {
-                        var position = new Position(rowIndex, columnIndex);
-
-                        if (this[position] is null)
-                            yield return position;
-                    }
-                }
+                for (var rowIndex = 0; rowIndex < Height; rowIndex++)
+                    for (var columnIndex = 0; columnIndex < Width; columnIndex++)
+                        yield return new Position(rowIndex, columnIndex);
             }
         }
 
         public bool IsFilled()
-            => this.All(cell => cell is not null);
+            => Cells.All(c => !c.Empty);
 
-        public Symbol?[] GetRow(int index)
-            => rows[index];
+        public IEnumerable<IEnumerable<ICell>> GetLines()
+            => GetRows()
+                .Concat(GetColumns())
+                .Concat(GetDiagonals());
 
-        public Symbol?[] GetColumn(int index)
-            => new[]
+        public IEnumerable<IEnumerable<ICell>> GetLines(Position position)
+        {
+            yield return GetRow(position.Row);
+            yield return GetColumn(position.Column);
+
+            if (TryGetDiagonal(position, out var diagonal))
+                yield return diagonal;
+
+            if (TryGetAntidiagonal(position, out var antidiagonal))
+                yield return antidiagonal;
+        }
+
+        public IEnumerable<IEnumerable<ICell>> GetRows()
+        {
+            for (var i = 0; i < Height; i++)
+                yield return GetRow(i);
+        }
+
+        public IEnumerable<ICell> GetRow(int index)
+        {
+            for (var columnIndex = 0; columnIndex < Width; columnIndex++)
+                yield return new Cell(this, rowIndex: index, columnIndex);
+        }
+
+        public IEnumerable<IEnumerable<ICell>> GetColumns()
+        {
+            for (var i = 0; i < Width; i++)
+                yield return GetColumn(i);
+        }
+
+        public IEnumerable<ICell> GetColumn(int index)
+        {
+            for (var rowIndex = 0; rowIndex < Height; rowIndex++)
+                yield return new Cell(this, rowIndex, columnIndex: index);
+        }
+
+        /// <summary> Get diagonal (from top left end to bottom right end) and antidiagonal (from top right end to bottom left end). </summary>
+        public IEnumerable<IEnumerable<ICell>> GetDiagonals()
+        {
+            yield return GetDiagonal();
+            yield return GetAntidiagonal();
+        }
+
+        /// <summary> Get diagonal from top left end to bottom right end if given position belongs to it. </summary>
+        public bool TryGetDiagonal(Position position, out IEnumerable<ICell> diagonal)
+        {
+            diagonal = GetDiagonal().ToList();
+            var diagonalPositions = diagonal.Select(c => c.Position);
+
+            if (!diagonalPositions.Contains(position))
             {
-                rows[0][index],
-                rows[1][index],
-                rows[2][index],
-            };
+                diagonal = Enumerable.Empty<ICell>();
+
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary> Get diagonal from top left end to bottom right end. </summary>
-        public IEnumerable<Symbol?> GetDiagonal(Position position)
+        public IEnumerable<ICell> GetDiagonal()
         {
-            // Set position to top left diagonal end.
-            while (position.Row > 0 && position.Column > 0)
-                position = new Position(position.Row - 1, position.Column - 1);
-
-            // Yield positions from top left end to bottom right end.
-            while (position.Row <= 2 && position.Column <= 2)
+            for (var position = new Position(row: 0, column: 0);
+                position.Row < Height && position.Column < Width;
+                position = new Position(position.Row + 1, position.Column + 1))
             {
-                yield return this[position];
-
-                position = new Position(position.Row + 1, position.Column + 1);
+                yield return new Cell(this, position);
             }
         }
 
-        /// <summary> Get diagonal from top right end to bottom left end. </summary>
-        public IEnumerable<Symbol?> GetAntidiagonal(Position position)
+        /// <summary> Get diagonal from top right end to bottom left end if given position belongs to it. </summary>
+        public bool TryGetAntidiagonal(Position position, out IEnumerable<ICell> antidiagonal)
         {
-            // Set position to top right diagonal end.
-            while (position.Row > 0 && position.Column < 2)
-                position = new Position(position.Row - 1, position.Column + 1);
+            antidiagonal = GetDiagonal().ToList();
+            var antidiagonalPositions = antidiagonal.Select(c => c.Position);
 
-            // Yield positions from top right end to bottom left end.
-            while (position.Row <= 2 && position.Column >= 0)
+            if (!antidiagonalPositions.Contains(position))
             {
-                yield return this[position];
+                antidiagonal = Enumerable.Empty<ICell>();
 
-                position = new Position(position.Row + 1, position.Column - 1);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary> Get diagonal from top right end to bottom left end. </summary>
+        public IEnumerable<ICell> GetAntidiagonal()
+        {
+            for (var position = new Position(row: 0, column: Width - 1);
+                position.Row < Height && position.Column >= 0;
+                position = new Position(position.Row + 1, position.Column - 1))
+            {
+                yield return new Cell(this, position);
             }
         }
 
         public IEnumerator<Symbol?> GetEnumerator()
-            => rows[0]
-                .Concat(rows[1])
-                .Concat(rows[2])
+            => marks.ToEnumerable()
                 .GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-            => GetEnumerator();
+            => marks.GetEnumerator();
 
-        private readonly Symbol?[][] rows;
+        public const int Height = 3;
+        public const int Width = 3;
+
+        private readonly Symbol?[,] marks;
     }
 }

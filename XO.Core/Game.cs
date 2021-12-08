@@ -5,10 +5,7 @@ namespace XO.Core
     public class Game : IReadOnlyGame
     {
         public Game()
-        {
-            RandomizeCurrentSymbol();
-            winChecker = new(Grid);
-        }
+            => RandomizeCurrentSymbol();
 
         public IReadOnlyGrid Grid => grid;
 
@@ -29,7 +26,7 @@ namespace XO.Core
 
         private void FinishTurn()
         {
-            if (IsWin())
+            if (DoesCurrentSymbolWin())
                 State = CurrentSymbol is Symbol.X
                     ? GameState.XWin
                     : GameState.OWin;
@@ -49,12 +46,12 @@ namespace XO.Core
                 ? Symbol.O
                 : Symbol.X;
 
-        private bool IsWin()
-            => winChecker.DoesWin(lastMarkedPosition);
+        private bool DoesCurrentSymbolWin()
+            => Grid.GetLines(lastMarkedPosition)
+                .Any(l => l.HasThree(CurrentSymbol));
 
         private readonly Grid grid = new();
         private readonly Random random = new();
-        private readonly WinChecker winChecker;
 
         private Position lastMarkedPosition;
     }

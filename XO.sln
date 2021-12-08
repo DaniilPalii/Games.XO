@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XO.Core", "XO.Core\XO.Core.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XO.SystemExtensions", "XO.Extensions\XO.SystemExtensions.csproj", "{27BE8810-96E7-483D-9D9E-0C04E93E0340}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XO.Resources", "XO.Resources\XO.Resources.csproj", "{B9C5BDA8-C144-4ED2-AA9A-F8D045033A0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XO.Resources", "XO.Resources\XO.Resources.csproj", "{B9C5BDA8-C144-4ED2-AA9A-F8D045033A0D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D24939E8-71C7-4AC6-81D3-A4342D1DC2AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XO.UnitTests.CoreTests", "Tests\XO.UnitTests.CoreTests\XO.UnitTests.CoreTests.csproj", "{D9E3F2E0-66D6-4E5E-9219-68E809874915}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{B9C5BDA8-C144-4ED2-AA9A-F8D045033A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9C5BDA8-C144-4ED2-AA9A-F8D045033A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9C5BDA8-C144-4ED2-AA9A-F8D045033A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9E3F2E0-66D6-4E5E-9219-68E809874915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9E3F2E0-66D6-4E5E-9219-68E809874915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9E3F2E0-66D6-4E5E-9219-68E809874915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9E3F2E0-66D6-4E5E-9219-68E809874915}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D9E3F2E0-66D6-4E5E-9219-68E809874915} = {D24939E8-71C7-4AC6-81D3-A4342D1DC2AC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDED7305-07B9-48E1-8FA3-0388F511CA08}

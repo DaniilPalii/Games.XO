@@ -6,27 +6,27 @@ Console.Clear();
 GameConsole.WriteWelcome();
 
 var game = new Game();
-var console = new GameConsole(game);
+var gameConsole = new GameConsole(game);
 
-var players = console.RequestPlayers()
+var players = gameConsole.RequestPlayers()
     .ToList()
     .RepeatEndless()
     .GetEnumerator();
 Console.Clear();
-console.WriteGrid();
+gameConsole.WriteGrid();
 
 Position choosenPosition;
 
 while (game.State is GameState.Pending)
 {
     players.MoveNext();
-    console.WriteTurn();
+    gameConsole.WriteTurn();
     choosenPosition = players.Current.ChoosePosition();
     game.Mark(choosenPosition);
 
     Console.SetCursorPosition(0, 0);
-    console.WriteGrid();
-    console.WriteChosenPosition(choosenPosition);
+    gameConsole.WriteGrid();
+    gameConsole.WriteChosenPosition(choosenPosition);
 }
 
-console.WriteState();
+gameConsole.WriteState();

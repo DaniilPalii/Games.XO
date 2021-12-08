@@ -8,12 +8,26 @@
 
         bool IsFilled();
 
-        Symbol?[] GetRow(int index);
+        IEnumerable<IEnumerable<ICell>> GetLines();
 
-        Symbol?[] GetColumn(int index);
+        IEnumerable<IEnumerable<ICell>> GetLines(Position position);
 
-        IEnumerable<Symbol?> GetDiagonal(Position position);
+        IEnumerable<IEnumerable<ICell>> GetRows();
 
-        IEnumerable<Symbol?> GetAntidiagonal(Position position);
+        IEnumerable<ICell> GetRow(int index);
+
+        IEnumerable<IEnumerable<ICell>> GetColumns();
+
+        IEnumerable<ICell> GetColumn(int index);
+
+        IEnumerable<IEnumerable<ICell>> GetDiagonals();
+
+        bool TryGetDiagonal(Position position, out IEnumerable<ICell> diagonal);
+
+        IEnumerable<ICell> GetDiagonal();
+
+        bool TryGetAntidiagonal(Position position, out IEnumerable<ICell> antidiagonal);
+
+        IEnumerable<ICell> GetAntidiagonal();
     }
 }

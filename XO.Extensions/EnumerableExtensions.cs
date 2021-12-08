@@ -2,6 +2,25 @@
 {
     public static class EnumerableExtensions
     {
+        public static bool Has<T>(this IEnumerable<T> elements, T match, int times)
+        {
+            var count = 0;
+
+            foreach (var element in elements)
+                if (Equals(element, match))
+                {
+                    count++;
+
+                    if (count == times)
+                        return true;
+                }
+
+            return false;
+        }
+
+        public static bool Has<T>(this IEnumerable<T> elements, T match)
+               => elements.Any(e => Equals(e, match));
+
         public static bool AreEqual<T>(this IEnumerable<T> elements)
         {
             var firstElement = elements.First();
