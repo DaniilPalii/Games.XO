@@ -1,20 +1,29 @@
 ﻿using XO.ConsoleUI.Internal;
 using XO.Core;
+using XO.SystemExtensions;
+
+Console.Clear();
+GameConsole.WriteWelcome();
 
 var game = new Game();
 var console = new GameConsole(game);
 
-console.Clear();
-console.WriteWelcome();
+var players = console.RequestPlayers()
+    .ToList()
+    .RepeatEndless()
+    .GetEnumerator();
+Console.Clear();
+console.WriteGrid();
 
 while (game.State is GameState.Pending)
 {
-    console.WriteGrid();
+    players.MoveNext();
     console.WriteTurn();
     game.Mark(
-        console.PromtPosition());
-    console.Clear();
+        players.Current.ChoosePosition());
+    Console.SetCursorPosition(0, 0);
+    console.WriteGrid();
+    Thread.Sleep(500);
 }
 
-console.WriteGrid();
 console.WriteState();

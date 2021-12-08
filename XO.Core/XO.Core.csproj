@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XO.Extensions\XO.Extensions.csproj" />
+    <ProjectReference Include="..\XO.Extensions\XO.SystemExtensions.csproj" />
   </ItemGroup>
 
 </Project>

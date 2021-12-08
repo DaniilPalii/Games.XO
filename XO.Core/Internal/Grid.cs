@@ -5,7 +5,7 @@ namespace XO.Core.Internal
     internal class Grid : IReadOnlyGrid
     {
         public Grid()
-            => this.rows = new[]
+            => rows = new[]
             {
                 new Symbol?[3],
                 new Symbol?[3],
@@ -14,8 +14,8 @@ namespace XO.Core.Internal
 
         public Symbol? this[Position position]
         {
-            get => this.rows[position.Row][position.Column];
-            set => this.rows[position.Row][position.Column] = value;
+            get => rows[position.Row][position.Column];
+            set => rows[position.Row][position.Column] = value;
         }
 
         public IEnumerable<Position> FreePositions
@@ -35,15 +35,18 @@ namespace XO.Core.Internal
             }
         }
 
+        public bool IsFilled()
+            => this.All(cell => cell is not null);
+
         public Symbol?[] GetRow(int index)
-            => this.rows[index];
+            => rows[index];
 
         public Symbol?[] GetColumn(int index)
             => new[]
             {
-                this.rows[0][index],
-                this.rows[1][index],
-                this.rows[2][index],
+                rows[0][index],
+                rows[1][index],
+                rows[2][index],
             };
 
         /// <summary> Get diagonal from top left end to bottom right end. </summary>
@@ -79,12 +82,13 @@ namespace XO.Core.Internal
         }
 
         public IEnumerator<Symbol?> GetEnumerator()
-            => this.rows[0]
-                .Concat(this.rows[1])
-                .Concat(this.rows[2])
+            => rows[0]
+                .Concat(rows[1])
+                .Concat(rows[2])
                 .GetEnumerator();
+
         IEnumerator IEnumerable.GetEnumerator()
-            => this.GetEnumerator();
+            => GetEnumerator();
 
         private readonly Symbol?[][] rows;
     }

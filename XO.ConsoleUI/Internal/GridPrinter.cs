@@ -10,7 +10,7 @@ namespace XO.ConsoleUI.Internal
 
         public string GetGrid()
         {
-            var marks = this.grid.Select(ToString)
+            var marks = grid.Select(ToStringOrSpace)
                 .ToArray();
 
             return string.Format(
@@ -19,15 +19,10 @@ namespace XO.ConsoleUI.Internal
                 marks);
         }
 
-        public IEnumerable<string> GetFreePositions()
-            => this.grid.FreePositions
-                .Select(p => PositionConverter.ToString(p))
-                .OrderBy(p => p);
-
-        private static string? ToString(Symbol? m)
-            => m is null
-                ? " "
-                : m.ToString();
+        private static string? ToStringOrSpace(Symbol? m)
+            => m is not null
+                ? m.ToString()
+                : " ";
 
         private readonly IReadOnlyGrid grid;
     }

@@ -6,6 +6,8 @@
 
         IEnumerable<Position> FreePositions { get; }
 
+        bool IsFilled();
+
         Symbol?[] GetRow(int index);
 
         Symbol?[] GetColumn(int index);

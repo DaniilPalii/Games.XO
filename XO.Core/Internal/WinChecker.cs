@@ -1,4 +1,4 @@
-﻿using XO.Extensions;
+﻿using XO.SystemExtensions;
 
 namespace XO.Core.Internal
 {
@@ -8,21 +8,21 @@ namespace XO.Core.Internal
             => this.grid = grid;
 
         public bool DoesWin(Position lastMarkedPosition)
-            => this.HasThreeInRow(lastMarkedPosition.Row)
-                || this.HasThreeInColumn(lastMarkedPosition.Column)
-                || this.HasThreeInDiagonal(lastMarkedPosition)
-                || this.HasThreeInAntidiagonal(lastMarkedPosition);
+            => HasThreeInRow(lastMarkedPosition.Row)
+                || HasThreeInColumn(lastMarkedPosition.Column)
+                || HasThreeInDiagonal(lastMarkedPosition)
+                || HasThreeInAntidiagonal(lastMarkedPosition);
         private bool HasThreeInRow(int index)
-            => this.grid.GetRow(index)
+            => grid.GetRow(index)
                 .AreEqual();
 
         private bool HasThreeInColumn(int index)
-            => this.grid.GetColumn(index)
+            => grid.GetColumn(index)
                 .AreEqual();
 
         private bool HasThreeInDiagonal(Position position)
         {
-            var marks = this.grid.GetDiagonal(position)
+            var marks = grid.GetDiagonal(position)
                 .ToList();
 
             return marks.Count == 3
@@ -31,7 +31,7 @@ namespace XO.Core.Internal
 
         private bool HasThreeInAntidiagonal(Position position)
         {
-            var marks = this.grid.GetAntidiagonal(position)
+            var marks = grid.GetAntidiagonal(position)
                 .ToList();
 
             return marks.Count == 3

@@ -1,53 +1,89 @@
-﻿using Spectre.Console;
+﻿using System.Globalization;
+using Spectre.Console;
 using XO.Core;
+using XO.Core.Players;
+using XO.Resources;
+using XO.SystemExtensions.Exceptions;
 
 namespace XO.ConsoleUI.Internal
 {
     internal class GameConsole
     {
-        public GameConsole(Game game)
+        public GameConsole(IReadOnlyGame game)
         {
             this.game = game;
-            this.gridPrinter = new GridPrinter(game.Grid);
+            gridPrinter = new GridPrinter(game.Grid);
         }
 
-        public void WriteWelcome()
-            => Console.WriteLine("Welcome to Tic-tac-toe game!\n");
+        public static void WriteWelcome()
+        {
+            WriteLine(Messages.Welcome);
+            WriteLine();
+        }
+
+        public IEnumerable<IPlayer> RequestPlayers()
+        {
+            var playerKinds = Enum.GetValues<PlayerKind>();
+
+            yield return PromptForPlayer(playerKinds, playerIndex: 1);
+            yield return PromptForPlayer(playerKinds, playerIndex: 2);
+        }
 
         public void WriteGrid()
         {
-            Console.WriteLine(this.gridPrinter.GetGrid());
-            Console.WriteLine();
+            WriteLine(gridPrinter.GetGrid());
+            WriteLine();
         }
 
         public void WriteTurn()
-            => Console.WriteLine($"Player {this.game.CurrentSymbol} turn.");
-
-        public Position PromtPosition()
-            => AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select cell:")
-                    .AddChoices(
-                        this.gridPrinter.GetFreePositions()))
-                .ToPosition();
+            => WriteLine(
+                Format(Messages.PlayerTurn, game.CurrentSymbol));
 
         public void WriteState()
+            => WriteLine(
+                MessageMap.GetFor(game.State));
+
+        private Position PromptForPosition()
+            => PromptForSelection(
+                title: Messages.SelectCell,
+                choises: game.Grid.FreePositions
+                    .OrderBy(p => p.Column)
+                    .ThenBy(p => p.Row));
+
+        private IPlayer PromptForPlayer(IEnumerable<PlayerKind> playerKinds, int playerIndex)
         {
-            var stateMessage = game.State switch
-            {
-                GameState.Pending => "Game is pending.",
-                GameState.Draw => "It's a draw.",
-                GameState.XWin => "Player X win!",
-                GameState.OWin => "Player O win!",
-                _ => throw new ArgumentException(nameof(game.State)),
-            };
-            Console.WriteLine(stateMessage);
+            var playerKind = PromptForSelection(
+                title: Format(Messages.SelectPlayerType, playerIndex),
+                choises: playerKinds);
+
+            return CreatePlayer(playerKind);
         }
 
-        public void Clear()
-            => Console.Clear();
+        private IPlayer CreatePlayer(PlayerKind playerKind)
+            => playerKind switch
+            {
+                PlayerKind.Human => new HumanPlayer(choosePosition: () => PromptForPosition()),
+                PlayerKind.RandomizingComputer => new RandomizingComputerPlayer(game),
+                _ => throw new UnhandledEnumValueException(playerKind),
+            };
 
-        private readonly Game game;
+        private static T PromptForSelection<T>(string title, IEnumerable<T> choises)
+            where T : notnull
+            => AnsiConsole.Prompt(
+                new SelectionPrompt<T>()
+                    .Title(title)
+                    .AddChoices(choises));
+
+        private static string Format(string format, object? arg0)
+            => string.Format(CultureInfo.CurrentCulture, format, arg0);
+
+        private static void WriteLine(string text)
+            => Console.WriteLine(text);
+
+        private static void WriteLine()
+            => Console.WriteLine();
+
+        private readonly IReadOnlyGame game;
         private readonly GridPrinter gridPrinter;
     }
 }

@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XO.Core\XO.Core.csproj" />
+    <ProjectReference Include="..\XO.Extensions\XO.SystemExtensions.csproj" />
+    <ProjectReference Include="..\XO.Resources\XO.Resources.csproj" />
   </ItemGroup>
 
   <ItemGroup>

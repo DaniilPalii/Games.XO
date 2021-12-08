@@ -1,4 +1,4 @@
-﻿namespace XO.Extensions
+﻿namespace XO.SystemExtensions
 {
     public static class EnumerableExtensions
     {
@@ -8,6 +8,13 @@
 
             return elements.Skip(1)
                 .All(e => Equals(firstElement, e));
+        }
+
+        public static IEnumerable<T> RepeatEndless<T>(this IEnumerable<T> elements)
+        {
+            while (true)
+                foreach (var element in elements)
+                    yield return element;
         }
     }
 }

@@ -2,55 +2,55 @@
 
 namespace XO.Core
 {
-    public class Game
+    public class Game : IReadOnlyGame
     {
         public Game()
         {
-            this.RandomizeCurrentSymbol();
-            this.winChecker = new(this.Grid);
+            RandomizeCurrentSymbol();
+            winChecker = new(Grid);
         }
 
-        public IReadOnlyGrid Grid
-            => this.grid;
+        public IReadOnlyGrid Grid => grid;
 
-        public Symbol CurrentSymbol { get; set; }
+        public Symbol CurrentSymbol { get; private set; }
 
-        public GameState State { get; set; }
+        public GameState State { get; private set; }
 
         public void Mark(Position position)
         {
-            if (this.State is not GameState.Pending
-                || this.grid[position] is not null)
-                return;
+            if (State is not GameState.Pending
+                || grid[position] is not null)
+                throw new InvalidOperationException("Given position isn't empty.");
 
-            this.grid[position] = this.CurrentSymbol;
-            this.lastMarkedPosition = position;
-            this.FinishTurn();
+            grid[position] = CurrentSymbol;
+            lastMarkedPosition = position;
+            FinishTurn();
         }
 
         private void FinishTurn()
         {
-            if (this.IsWin())
-                this.State = this.CurrentSymbol is Symbol.X
+            if (IsWin())
+                State = CurrentSymbol is Symbol.X
                     ? GameState.XWin
                     : GameState.OWin;
-            else if (this.Grid.All(cell => cell is not null))
-                this.State = GameState.Draw;
+            else if (Grid.IsFilled())
+                State = GameState.Draw;
             else
-                this.SwitchCurrentSymbol();
+                SwitchCurrentSymbol();
         }
+
         private void RandomizeCurrentSymbol()
-            => this.CurrentSymbol = this.random.Next(0, 1) is 1
+            => CurrentSymbol = random.Next(0, 1) is 1
                 ? Symbol.X
                 : Symbol.O;
 
         private Symbol SwitchCurrentSymbol()
-            => this.CurrentSymbol = this.CurrentSymbol is Symbol.X
+            => CurrentSymbol = CurrentSymbol is Symbol.X
                 ? Symbol.O
                 : Symbol.X;
 
         private bool IsWin()
-            => this.winChecker.DoesWin(this.lastMarkedPosition);
+            => winChecker.DoesWin(lastMarkedPosition);
 
         private readonly Grid grid = new();
         private readonly Random random = new();
