@@ -1,0 +1,15 @@
+﻿namespace XO.Core
+{
+    public struct Position
+    {
+        public Position(int row, int column)
+        {
+            this.Row = row;
+            this.Column = column;
+        }
+
+        public int Row { get; }
+
+        public int Column { get; }
+    }
+}
